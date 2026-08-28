@@ -2,7 +2,7 @@ import time
 import mysql.connector
 from mysql.connector import Error, pooling
 import pandas as pd
-from config import Config
+from backend.config import Config
 
 # Global active configuration
 DB_CONFIG = {
