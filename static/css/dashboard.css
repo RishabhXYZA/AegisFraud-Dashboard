@@ -1,0 +1,241 @@
+* AegisFraud Analytics - Dark Theme Styles */
+:root {
+    --bg-dark-app: #070B12;
+    --bg-dark-panel: #0B111A;
+    --bg-dark-card: #101726;
+    --bg-dark-editor: #090E17;
+    --border-dark: #1E293B;
+    --text-main: #E6EDF7;
+    --text-muted: #8FA0B5;
+    --primary-accent: #3B82F6;
+    --purple-accent: #8B5CF6;
+    --danger-accent: #EF476F;
+    --warning-accent: #F59E0B;
+    --success-accent: #06D6A0;
+}
+
+body.bg-dark-app {
+    background-color: var(--bg-dark-app);
+    color: var(--text-main);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    min-height: 100vh;
+}
+
+.bg-dark-panel { background-color: var(--bg-dark-panel) !important; }
+.bg-dark-card { background-color: var(--bg-dark-card) !important; }
+.bg-dark-editor { background-color: var(--bg-dark-editor) !important; }
+.border-dark-subtle { border-color: var(--border-dark) !important; }
+.text-primary-accent { color: var(--primary-accent) !important; }
+.text-purple { color: var(--purple-accent) !important; }
+.bg-purple-subtle { background-color: rgba(139, 92, 246, 0.15) !important; }
+
+/* Status Dot */
+.status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+}
+.status-dot-live {
+    background-color: #10B981;
+    box-shadow: 0 0 8px #10B981;
+    animation: pulse-dot 2s infinite;
+}
+@keyframes pulse-dot {
+    0% { transform: scale(0.95); opacity: 0.8; }
+    50% { transform: scale(1.2); opacity: 1; }
+    100% { transform: scale(0.95); opacity: 0.8; }
+}
+
+/* Sidebar Styling */
+.sidebar {
+    min-height: calc(100vh - 57px);
+}
+.sidebar .nav-link {
+    color: var(--text-muted);
+    transition: all 0.2s ease-in-out;
+    border: 1px solid transparent;
+}
+.sidebar .nav-link:hover {
+    color: var(--text-main);
+    background-color: rgba(255, 255, 255, 0.04);
+}
+.sidebar .nav-link.active {
+    color: #FFFFFF !important;
+    background-color: #1E293B !important;
+    border-color: rgba(59, 130, 246, 0.4) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* KPI Cards */
+.kpi-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.kpi-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+}
+.glow-danger {
+    box-shadow: 0 0 14px rgba(239, 71, 111, 0.12);
+}
+.glow-warning {
+    box-shadow: 0 0 14px rgba(245, 158, 11, 0.12);
+}
+
+/* Threat Cards */
+.threat-card {
+    transition: transform 0.2s ease;
+}
+.threat-card:hover {
+    transform: translateY(-2px);
+}
+
+/* Workflow Step Cards */
+.workflow-card {
+    transition: all 0.2s ease;
+}
+.workflow-card:hover {
+    border-color: var(--primary-accent) !important;
+    background-color: #101726 !important;
+    transform: translateY(-3px);
+}
+.step-badge {
+    position: absolute;
+    top: 10px;
+    right: 12px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--primary-accent);
+    opacity: 0.7;
+    font-family: 'JetBrains Mono', monospace;
+}
+
+/* Chart Container Cards */
+.chart-box {
+    background-color: var(--bg-dark-card);
+    border: 1px solid var(--border-dark);
+    border-radius: 8px;
+    padding: 12px;
+    min-height: 380px;
+    transition: box-shadow 0.2s ease;
+}
+.chart-box:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+}
+
+/* Floating Avatar Chatbot */
+.floating-avatar-toggle {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    width: 58px;
+    height: 58px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #3B82F6, #8B5CF6);
+    color: #FFFFFF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 8px 24px rgba(59, 130, 246, 0.4);
+    z-index: 1050;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.floating-avatar-toggle:hover {
+    transform: scale(1.08);
+    box-shadow: 0 12px 30px rgba(139, 92, 246, 0.6);
+}
+.avatar-icon {
+    font-size: 1.6rem;
+}
+.avatar-pulse-badge {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: #10B981;
+    border: 2px solid var(--bg-dark-app);
+}
+
+/* Phone-Ratio Avatar Chat Window */
+.avatar-chat-window {
+    position: fixed;
+    bottom: 92px;
+    right: 24px;
+    width: 380px;
+    height: 580px;
+    max-width: calc(100vw - 32px);
+    max-height: calc(100vh - 120px);
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    z-index: 1050;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    transform: scale(0.9) translateY(20px);
+    opacity: 0;
+    pointer-events: none;
+}
+.avatar-chat-window.open {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+}
+.chat-messages {
+    flex-grow: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+.message-bubble {
+    max-width: 88%;
+    padding: 10px 14px;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    line-height: 1.45;
+}
+.user-bubble {
+    align-self: flex-end;
+    background-color: #2563EB;
+    color: #FFFFFF;
+    border-bottom-right-radius: 2px;
+}
+.bot-bubble {
+    align-self: flex-start;
+    background-color: #1E293B;
+    color: var(--text-main);
+    border-bottom-left-radius: 2px;
+    border: 1px solid var(--border-dark);
+}
+.bot-bubble p:last-child { margin-bottom: 0; }
+.bot-bubble table {
+    width: 100%;
+    font-size: 0.75rem;
+    margin-top: 6px;
+    margin-bottom: 6px;
+    border-collapse: collapse;
+}
+.bot-bubble th, .bot-bubble td {
+    padding: 4px 6px;
+    border: 1px solid var(--border-dark);
+}
+.bot-bubble th { background-color: rgba(255, 255, 255, 0.05); }
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+::-webkit-scrollbar-track {
+    background: var(--bg-dark-app);
+}
+::-webkit-scrollbar-thumb {
+    background: #334155;
+    border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #475569;
+}
