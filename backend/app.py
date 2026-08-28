@@ -1,10 +1,6 @@
-# ============================================================
-# AEGIS FRAUD DETECTION ANALYTICAL DASHBOARD
-# Flask Backend Server
-# ============================================================
-
 import os
 from flask import Flask, render_template, jsonify, request
+
 from backend.config import Config
 from backend import database
 from backend import query_registry
