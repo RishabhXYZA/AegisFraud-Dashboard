@@ -3,7 +3,7 @@ import json
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
-from database import run_query
+from backend.database import run_query
 
 DARK_BG = "#070B12"
 DARK_PANEL = "#0B111A"
