@@ -1,7 +1,7 @@
 # Virtual Avatar Chatbot Engine
 import re
-from database import run_query
-import analytics
+from backend.database import run_query
+from backend import analytics
 
 
 class FraudChatbot:
