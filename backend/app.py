@@ -6,10 +6,10 @@
 import os
 from flask import Flask, render_template, jsonify, request
 from backend.config import Config
-import database
-import query_registry
-import analytics
-from chatbot_engine import bot
+from backend import database
+from backend import query_registry
+from backend import analytics
+from backend.chatbot_engine import bot
 
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
