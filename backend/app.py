@@ -5,7 +5,7 @@
 
 import os
 from flask import Flask, render_template, jsonify, request
-from config import Config
+from backend.config import Config
 import database
 import query_registry
 import analytics
