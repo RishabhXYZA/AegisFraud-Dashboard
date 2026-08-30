@@ -5,21 +5,12 @@ from mysql.connector import Error, pooling
 import pandas as pd
 from backend.config import Config
 
-
-# Project root
+# Path to Aiven MySQL CA certificate
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
-# Aiven CA certificate
-CA_CERT_PATH = os.path.join(
-    BASE_DIR,
-    "certficates",
-    "aiven-ca.pem"
-)
-
-print("CA certificate path:", CA_CERT_PATH)
-print("CA certificate exists:", os.path.isfile(CA_CERT_PATH))
+CA_CERT_PATH = os.path.join(BASE_DIR, "certficates", "aiven-ca.pem")
 
 
+# Global active configuration
 DB_CONFIG = {
     "host": Config.MYSQL_HOST,
     "port": Config.MYSQL_PORT,
@@ -27,14 +18,8 @@ DB_CONFIG = {
     "password": Config.MYSQL_PASSWORD,
     "database": Config.MYSQL_DATABASE,
     "autocommit": True,
-
-    # Aiven SSL
     "ssl_ca": CA_CERT_PATH,
-    "ssl_verify_cert": True,
-    "ssl_verify_identity": True,
-
-    # Avoid problems with the native C extension
-    "use_pure": True
+    "ssl_verify_cert": True
 }
 
 
