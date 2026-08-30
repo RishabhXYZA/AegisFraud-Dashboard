@@ -1,8 +1,14 @@
+import os
 import time
 import mysql.connector
 from mysql.connector import Error, pooling
 import pandas as pd
 from backend.config import Config
+
+# Path to Aiven MySQL CA certificate
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+CA_CERT_PATH = os.path.join(BASE_DIR, "certificates", "aiven-ca.pem")
+
 
 # Global active configuration
 DB_CONFIG = {
@@ -11,7 +17,9 @@ DB_CONFIG = {
     "user": Config.MYSQL_USER,
     "password": Config.MYSQL_PASSWORD,
     "database": Config.MYSQL_DATABASE,
-    "autocommit": True
+    "autocommit": True,
+    "ssl_ca": CA_CERT_PATH,
+    "ssl_verify_cert": True
 }
 
 
