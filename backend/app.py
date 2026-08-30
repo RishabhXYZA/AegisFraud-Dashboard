@@ -1,5 +1,4 @@
 import os
-
 from flask import Flask, render_template, jsonify, request
 
 from backend.config import Config
@@ -23,7 +22,6 @@ app = Flask(
 
 app.config.from_object(Config)
 
-
 @app.route("/")
 def index():
     """Render main dashboard single-page interface."""
@@ -32,7 +30,6 @@ def index():
 @app.route("/api/kpis", methods=["GET"])
 def api_kpis():
     """Retrieve top executive KPI metrics."""
-
     data = analytics.get_kpi_metrics()
 
     return jsonify({
@@ -43,7 +40,6 @@ def api_kpis():
 @app.route("/api/overview", methods=["GET"])
 def api_overview():
     """Retrieve executive overview data & workflow."""
-
     data = analytics.get_overview_data()
 
     return jsonify({
@@ -54,7 +50,6 @@ def api_overview():
 @app.route("/api/insights", methods=["GET"])
 def api_insights():
     """Retrieve executive business intelligence insights."""
-
     data = analytics.get_executive_insights_data()
 
     return jsonify({
@@ -97,40 +92,27 @@ def api_sql_run():
     Execute a selected or custom SQL query against MySQL
     and return results with execution metrics.
     """
-
     payload = request.get_json() or {}
 
     sql = payload.get("sql", "").strip()
     query_id = payload.get("query_id")
 
-    # --------------------------------------------------------
-    # Retrieve SQL from query registry if query_id is supplied
-    # --------------------------------------------------------
-
+    # If SQL was not directly supplied,
+    # retrieve it from the query registry.
     if not sql and query_id:
 
         q_obj = query_registry.get_query_by_id(query_id)
-
         if q_obj:
             sql = q_obj["sql"]
 
-    # --------------------------------------------------------
-    # Reject empty SQL requests
-    # --------------------------------------------------------
-
+    # Reject empty SQL requests.
     if not sql:
-
         return jsonify({
             "success": False,
             "error": "No SQL query provided."
         }), 400
 
-    # --------------------------------------------------------
-    # Execute query
-    # --------------------------------------------------------
-
     result = database.run_query_with_metrics(sql)
-
     return jsonify(result)
 
 @app.route("/api/chat", methods=["POST"])
@@ -142,7 +124,6 @@ def api_chat():
     user_msg = payload.get("message", "").strip()
 
     if not user_msg:
-
         return jsonify({
             "success": False,
             "reply": "Please provide a question."
@@ -155,12 +136,11 @@ def api_chat():
         "reply": reply
     })
 
+
 @app.route("/api/db/status", methods=["GET"])
 def api_db_status():
     """Check MySQL database connection status."""
-
     status_info = database.test_connection()
-
     return jsonify(status_info)
 
 @app.route("/api/db/config", methods=["POST"])
@@ -189,6 +169,7 @@ def api_db_config():
 
     return jsonify(status_info)
 
+
 if __name__ == "__main__":
 
     print("=" * 65)
@@ -202,13 +183,7 @@ if __name__ == "__main__":
     print("-" * 65)
 
     print("Server running at : http://127.0.0.1:5050")
-
-    # Dynamically display the configured database
-    print(
-        f"Connected Database: "
-        f"{Config.MYSQL_HOST}:{Config.MYSQL_PORT} "
-        f"[{Config.MYSQL_DATABASE}]"
-    )
+    print("Connected Database: MySQL localhost:3306 [fraud_detection]")
 
     print("=" * 65)
 
