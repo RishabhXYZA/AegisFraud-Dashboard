@@ -7,7 +7,7 @@ from backend.config import Config
 
 # Path to Aiven MySQL CA certificate
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-CA_CERT_PATH = os.path.join(BASE_DIR, "certficates", "aiven-ca.pem")
+CA_CERT_PATH = os.path.join(BASE_DIR, "certificates", "aiven-ca.pem")
 
 
 # Global active configuration
@@ -17,9 +17,7 @@ DB_CONFIG = {
     "user": Config.MYSQL_USER,
     "password": Config.MYSQL_PASSWORD,
     "database": Config.MYSQL_DATABASE,
-    "autocommit": True,
-    "ssl_ca": CA_CERT_PATH,
-    "ssl_verify_cert": True
+    "autocommit": True
 }
 
 
