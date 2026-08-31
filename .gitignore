@@ -1,34 +1,31 @@
-# Byte-compiled / optimized / DLL files
+# Python
 __pycache__/
 *.py[cod]
 *$py.class
 
-# C extensions
-*.so
-
-# Virtual Environments
+# Virtual environments
 venv/
 env/
 ENV/
 .venv/
 
-# Environment Variables & Secrets
+# Environment variables / secrets
 .env
 *.env.local
 
-# IDEs & Editors
+# IDE
 .vscode/
 .idea/
 *.swp
 *.swo
-.DS_Store
-Thumbs.db
 
-# Flask instance & runtime logs
+# Flask
 instance/
 .webassets-cache
+
+# Logs
 *.log
 
-# Large temporary datasets (Optional, uncomment if keeping raw CSVs out of git repo)
-# *.csv
--
+# OS
+.DS_Store
+Thumbs.db
