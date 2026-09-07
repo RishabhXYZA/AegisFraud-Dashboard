@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AegisFraud Intelligence | Enterprise Fraud Analytics</title>
+    <!-- Bootstrap 5.3 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link rel="stylesheet" href="/static/css/dashboard.css">
+</head>
+<body class="bg-dark-app text-light">
+    <!-- Top Navigation Header -->
+    <header class="navbar navbar-expand-lg border-bottom border-dark-subtle px-3 py-2 sticky-top bg-dark-panel">
+        <div class="container-fluid px-0">
+            <div class="d-flex align-items-center gap-2">
+                <button class="btn btn-sm btn-outline-secondary d-lg-none" id="mobileSidebarToggle"><i class="bi bi-list fs-5"></i></button>
+                <div class="brand-icon fs-4 text-primary"><i class="bi bi-shield-lock-fill"></i></div>
+                <div>
+                    <h5 class="mb-0 fw-bold tracking-tight text-light">AEGIS<span class="text-primary-accent">FRAUD</span></h5>
+                    <small class="text-muted text-uppercase fw-semibold" style="font-size: 0.68rem; letter-spacing: 1px;">Intelligence Platform</small>
+                </div>
+            </div>
+            <div class="d-flex align-items-center gap-3 ms-auto">
+                <div class="d-none d-md-flex align-items-center gap-2 px-3 py-1 rounded-pill bg-dark-card border border-dark-subtle">
+                    <span class="status-dot status-dot-live"></span>
+                    <span class="text-muted small">MySQL:</span>
+                    <span class="badge bg-success-subtle text-success border border-success-subtle font-monospace" id="dbStatusBadge">localhost:3306 [fraud_detection]</span>
+                </div>
+                <button class="btn btn-sm btn-outline-secondary d-flex align-items-center gap-1" data-bs-toggle="modal" data-bs-target="#dbConfigModal">
+                    <i class="bi bi-database-gear"></i><span class="d-none d-sm-inline">DB Settings</span>
+                </button>
+                <button class="btn btn-sm btn-primary-accent d-flex align-items-center gap-1" id="refreshAllBtn">
+                    <i class="bi bi-arrow-clockwise"></i><span class="d-none d-sm-inline">Sync</span>
+                </button>
+            </div>
+        </div>
+    </header>
+    <div class="container-fluid px-0 main-wrapper">
+        <div class="row g-0 h-100">
+            <!-- Sidebar Navigation (4 Distinct Tabs) -->
+            <nav class="col-lg-2 sidebar bg-dark-panel border-end border-dark-subtle d-flex flex-column" id="sidebarMenu">
+                <div class="p-3 border-bottom border-dark-subtle">
+                    <span class="text-xs text-uppercase fw-bold text-muted tracking-wider">Analytics Navigation</span>
+                </div>
+                <div class="nav flex-column nav-pills p-2 gap-1 flex-grow-1" id="sidebarTabs" role="tablist">
+                    <button class="nav-link active d-flex align-items-center gap-3 py-2 px-3 rounded-3" id="tab-overview-btn" data-bs-toggle="pill" data-bs-target="#tab-overview" type="button">
+                        <i class="bi bi-grid-1x2-fill fs-5 text-primary-accent"></i>
+                        <span class="fw-semibold">Executive Overview</span>
+                    </button>
+
+                    <button class="nav-link d-flex align-items-center gap-3 py-2 px-3 rounded-3" id="tab-insights-btn" data-bs-toggle="pill" data-bs-target="#tab-insights" type="button">
+                        <i class="bi bi-lightbulb-fill fs-5 text-warning"></i>
+                        <span class="fw-semibold">Executive Insights</span>
+                    </button>
+
+                    <button class="nav-link d-flex align-items-center gap-3 py-2 px-3 rounded-3" id="tab-graphs-btn" data-bs-toggle="pill" data-bs-target="#tab-graphs" type="button">
+                        <i class="bi bi-graph-up-arrow fs-5 text-info"></i>
+                        <span class="fw-semibold">Graph Insights</span>
+                    </button>
+
+                    <button class="nav-link d-flex align-items-center gap-3 py-2 px-3 rounded-3" id="tab-sql-btn" data-bs-toggle="pill" data-bs-target="#tab-sql" type="button">
+                        <i class="bi bi-terminal-fill fs-5 text-purple"></i>
+                        <span class="fw-semibold">SQL Query Explorer</span>
+                    </button>
+                </div>
+
+                <div class="p-3 border-top border-dark-subtle mt-auto bg-dark-card">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <div class="fw-bold small text-light">MySQL Engine</div>
+                            <small class="text-muted" style="font-size: 0.7rem;">v8.0.43 · Port 3306</small>
+                        </div>
+                        <i class="bi bi-cpu text-muted fs-5"></i>
+                    </div>
+                </div>
+            </nav>
+
+            <!-- Main Content Area -->
+            <main class="col-lg-10 content-area p-3 p-xl-4">
+
+                <!-- TOP GLOBAL KPI METRICS BAR (7 Key Metrics) -->
+                <div class="row g-2 g-xl-3 mb-4" id="kpiBar">
+                    <div class="col-6 col-md-3 col-xl">
+                        <div class="kpi-card bg-dark-card p-3 rounded-3 border border-dark-subtle">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <span class="kpi-label text-muted">Total Users</span>
+                                <i class="bi bi-people-fill text-primary"></i>
+                            </div>
+                            <h4 class="kpi-val mb-0 fw-bold text-light" id="kpiTotalUsers">2,000</h4>
+                            <small class="text-muted" style="font-size: 0.7rem;">Cardholder Accounts</small>
+                        </div>
+                    </div>
+
+                    <div class="col-6 col-md-3 col-xl">
+                        <div class="kpi-card bg-dark-card p-3 rounded-3 border border-dark-subtle">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <span class="kpi-label text-muted">Total Cards</span>
+                                <i class="bi bi-credit-card-2-front-fill text-info"></i>
+                            </div>
+                            <h4 class="kpi-val mb-0 fw-bold text-light" id="kpiTotalCards">6,146</h4>
+                            <small class="text-muted" style="font-size: 0.7rem;">Debit & Credit</small>
+                        </div>
+                    </div>
+
+                    <div class="col-6 col-md-3 col-xl">
+                        <div class="kpi-card bg-dark-card p-3 rounded-3 border border-dark-subtle">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <span class="kpi-label text-muted">Total Transactions</span>
+                                <i class="bi bi-receipt text-secondary"></i>
+                            </div>
+                            <h4 class="kpi-val mb-0 fw-bold text-light" id="kpiTotalTxns">200,000</h4>
+                            <small class="text-muted" style="font-size: 0.7rem;">Processed Logs</small>
+                        </div>
+                    </div>
+
+                    <div class="col-6 col-md-3 col-xl">
+                        <div class="kpi-card bg-dark-card p-3 rounded-3 border border-dark-subtle">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <span class="kpi-label text-muted">Processed Volume</span>
+                                <i class="bi bi-currency-dollar text-success"></i>
+                            </div>
+                            <h4 class="kpi-val mb-0 fw-bold text-light" id="kpiTotalAmt">$10.67M</h4>
+                            <small class="text-muted" style="font-size: 0.7rem;">Gross Value</small>
+                        </div>
+                    </div>
+
+                    <div class="col-6 col-md-4 col-xl">
+                        <div class="kpi-card bg-dark-card p-3 rounded-3 border border-danger-subtle glow-danger">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <span class="kpi-label text-danger fw-semibold">Fraudulent Txns</span>
+                                <i class="bi bi-exclamation-octagon-fill text-danger"></i>
+                            </div>
+                            <h4 class="kpi-val mb-0 fw-bold text-danger" id="kpiFraudTxns">29,757</h4>
+                            <small class="text-danger-emphasis" style="font-size: 0.7rem;">Identified Breaches</small>
+                        </div>
+                    </div>
+
+                    <div class="col-6 col-md-4 col-xl">
+                        <div class="kpi-card bg-dark-card p-3 rounded-3 border border-warning-subtle glow-warning">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <span class="kpi-label text-warning fw-semibold">Fraud Rate</span>
+                                <i class="bi bi-percent text-warning"></i>
+                            </div>
+                            <h4 class="kpi-val mb-0 fw-bold text-warning" id="kpiFraudRate">14.88%</h4>
+                            <small class="text-warning-emphasis" style="font-size: 0.7rem;">Incident Ratio</small>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-md-4 col-xl">
+                        <div class="kpi-card bg-dark-card p-3 rounded-3 border border-danger glow-danger">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <span class="kpi-label text-danger fw-bold">Fraud Exposure</span>
+                                <i class="bi bi-shield-fill-x text-danger"></i>
+                            </div>
+                            <h4 class="kpi-val mb-0 fw-bold text-danger" id="kpiFraudExposure">$3.23M</h4>
+                            <small class="text-danger-emphasis" style="font-size: 0.7rem;">Net Loss</small>
+                        </div>
+                    </div>
+                </div>
+                <!-- TAB PANES CONTAINER -->
+                <div class="tab-content" id="dashboardTabContent">
+
+                    <!-- ======================================================= -->
+                    <!-- TAB 1: EXECUTIVE OVERVIEW -->
+                    <!-- ======================================================= -->
+                    <div class="tab-pane fade show active" id="tab-overview" role="tabpanel">
+
+                        <!-- Executive Briefing Narrative -->
+                        <div class="card bg-dark-card border-dark-subtle mb-4 shadow-sm">
+                            <div class="card-body p-4">
+                                <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-3">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="badge-icon fs-5 text-primary-accent">
+                                            <i class="bi bi-shield-check"></i>
+                                        </div>
+                                        <div>
+                                            <h5 class="fw-bold mb-0 text-light">Executive Fraud Portfolio Health Briefing</h5>
+                                            <small class="text-muted">Enterprise Risk Assessment & Behavioral Pattern Analysis</small>
+                                        </div>
+                                    </div>
+                                    <span class="badge bg-warning-subtle text-warning border border-warning-subtle px-3 py-2 rounded-pill fw-semibold">
+                                        <i class="bi bi-exclamation-triangle-fill me-1"></i> ELEVATED VIGILANCE
+                                    </span>
+                                </div>
+                                <p class="text-muted mb-0 leading-relaxed" style="font-size: 0.95rem;" id="overviewBriefingText">
+                                    Portfolio analytics across 200,000 transactions reveal a baseline fraud rate of 14.88% representing $3.23M in monetary risk exposure. The heaviest loss concentration resides in Card-Not-Present (Online) channels and rapid multi-swipe velocity anomalies. The 4-factor risk scoring engine successfully isolates 85%+ of fraudulent exposure into the High Risk tier.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- 4 Core Threat Pattern Pillars -->
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6 col-xl-3">
+                                <div class="threat-card p-3 rounded-3 bg-dark-card border border-danger-subtle h-100">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <span class="badge bg-danger-subtle text-danger">High Exposure</span>
+                                        <i class="bi bi-globe text-danger fs-5"></i>
+                                    </div>
+                                    <h6 class="fw-bold text-light mb-1">Card-Not-Present (CNP)</h6>
+                                    <p class="text-muted small mb-0">Online transactions account for over 68% of dollar losses due to lack of physical cryptographic chip handshake.</p>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 col-xl-3">
+                                <div class="threat-card p-3 rounded-3 bg-dark-card border border-warning-subtle h-100">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <span class="badge bg-warning-subtle text-warning">Automated Attacks</span>
+                                        <i class="bi bi-lightning-charge-fill text-warning fs-5"></i>
+                                    </div>
+                                    <h6 class="fw-bold text-light mb-1">Velocity Spike Clusters</h6>
+                                    <p class="text-muted small mb-0">Compromised cards exhibit 5-10+ rapid charges within 24 hours before standard batch reconciliations trigger.</p>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 col-xl-3">
+                                <div class="threat-card p-3 rounded-3 bg-dark-card border border-info-subtle h-100">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <span class="badge bg-info-subtle text-info">Critical Signal</span>
+                                        <i class="bi bi-shield-slash-fill text-info fs-5"></i>
+                                    </div>
+                                    <h6 class="fw-bold text-light mb-1">Dark Web Credential Leaks</h6>
+                                    <p class="text-muted small mb-0">Leaked cards have a 3.4x higher compromise frequency, calling for automated token revocation and re-issuance.</p>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 col-xl-3">
+                                <div class="threat-card p-3 rounded-3 bg-dark-card border border-primary-subtle h-100">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <span class="badge bg-primary-subtle text-primary">Exposure Risk</span>
+                                        <i class="bi bi-credit-card-fill text-primary fs-5"></i>
+                                    </div>
+                                    <h6 class="fw-bold text-light mb-1">FICO & Credit Limit Skew</h6>
+                                    <p class="text-muted small mb-0">High credit limit cards ($15K+) account for 60%+ of net financial exposure even with modest transaction frequency.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Enhanced Workflow Architecture: "From Signal to Investigation" -->
+                        <div class="card bg-dark-card border-dark-subtle mb-4">
+                            <div class="card-header bg-dark-panel border-bottom border-dark-subtle p-3">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <div>
+                                        <span class="text-xs text-uppercase fw-bold text-primary-accent tracking-wider">WORKFLOW PIPELINE</span>
+                                        <h5 class="mb-0 fw-bold text-light">From Signal to Investigation & Containment</h5>
+                                    </div>
+                                    <span class="badge bg-dark border border-dark-subtle text-muted">4-Stage Automated Lifecycle</span>
+                                </div>
+                            </div>
+                            <div class="card-body p-4">
+                                <div class="row g-3 workflow-steps">
+                                    <div class="col-md-6 col-xl-3">
+                                        <div class="workflow-card p-3 rounded-3 bg-dark-panel border border-dark-subtle h-100 position-relative">
+                                            <div class="step-badge">01</div>
+                                            <div class="d-flex align-items-center gap-2 mb-2">
+                                                <i class="bi bi-database-down text-primary fs-5"></i>
+                                                <h6 class="fw-bold mb-0 text-light">Assess Exposure</h6>
+                                            </div>
+                                            <p class="text-muted small mb-0">Real-time ingestion of transactions, card metadata, and customer FICO profiling to establish incidence benchmarks.</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6 col-xl-3">
+                                        <div class="workflow-card p-3 rounded-3 bg-dark-panel border border-dark-subtle h-100 position-relative">
+                                            <div class="step-badge">02</div>
+                                            <div class="d-flex align-items-center gap-2 mb-2">
+                                                <i class="bi bi-cpu-fill text-warning fs-5"></i>
+                                                <h6 class="fw-bold mb-0 text-light">Multi-Factor Scoring</h6>
+                                            </div>
+                                            <p class="text-muted small mb-0">Executes 4-factor scoring (P99 amount, CNP channel, daily velocity >= 10, error flags) to segment into risk tiers.</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6 col-xl-3">
+                                        <div class="workflow-card p-3 rounded-3 bg-dark-panel border border-dark-subtle h-100 position-relative">
+                                            <div class="step-badge">03</div>
+                                            <div class="d-flex align-items-center gap-2 mb-2">
+                                                <i class="bi bi-diagram-3-fill text-info fs-5"></i>
+                                                <h6 class="fw-bold mb-0 text-light">Diagnostic Triaging</h6>
+                                            </div>
+                                            <p class="text-muted small mb-0">Interactive drill-down in Graph Insights across merchant hotspots, 24/7 heatmaps, and demographic vulnerabilities.</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6 col-xl-3">
+                                        <div class="workflow-card p-3 rounded-3 bg-dark-panel border border-dark-subtle h-100 position-relative">
+                                            <div class="step-badge">04</div>
+                                            <div class="d-flex align-items-center gap-2 mb-2">
+                                                <i class="bi bi-shield-check text-success fs-5"></i>
+                                                <h6 class="fw-bold mb-0 text-light">Prioritize Action</h6>
+                                            </div>
+                                            <p class="text-muted small mb-0">Automate 3DS step-up triggers, cardholder SMS alerts, merchant settlement holds, or live investigation in SQL Explorer.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+
+                    <!-- ======================================================= -->
+                    <!-- TAB 2: EXECUTIVE INSIGHTS -->
+                    <!-- ======================================================= -->
+                    <div class="tab-pane fade" id="tab-insights" role="tabpanel">
+                        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+                            <div>
+                                <h4 class="fw-bold text-light mb-1">Executive Risk Signals & Strategic Priorities</h4>
+                                <p class="text-muted small mb-0">Synthesized business findings derived from MySQL fraud analysis modules & multi-factor risk engine.</p>
+                            </div>
+                        </div>
+
+                        <!-- 4 Key Risk Signal Stat Badges -->
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6 col-xl-3">
+                                <div class="stat-callout-card p-3 rounded-3 bg-dark-card border border-danger-subtle">
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <span class="text-muted small fw-semibold">Online Channel Loss</span>
+                                        <span class="badge bg-danger-subtle text-danger">Critical</span>
+                                    </div>
+                                    <h3 class="fw-bold text-danger mb-0">68.4%</h3>
+                                    <small class="text-muted d-block mt-1">of all fraud losses originate in Online/CNP channels</small>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 col-xl-3">
+                                <div class="stat-callout-card p-3 rounded-3 bg-dark-card border border-success-subtle">
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <span class="text-muted small fw-semibold">Risk Engine Precision</span>
+                                        <span class="badge bg-success-subtle text-success">Calibrated</span>
+                                    </div>
+                                    <h3 class="fw-bold text-success mb-0">8.7x</h3>
+                                    <small class="text-muted d-block mt-1">higher fraud rate in High-Risk tier vs Low-Risk</small>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 col-xl-3">
+                                <div class="stat-callout-card p-3 rounded-3 bg-dark-card border border-warning-subtle">
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <span class="text-muted small fw-semibold">Dark Web Multiplier</span>
+                                        <span class="badge bg-warning-subtle text-warning">Elevated</span>
+                                    </div>
+                                    <h3 class="fw-bold text-warning mb-0">3.4x</h3>
+                                    <small class="text-muted d-block mt-1">higher fraud likelihood for leaked credentials</small>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 col-xl-3">
+                                <div class="stat-callout-card p-3 rounded-3 bg-dark-card border border-info-subtle">
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <span class="text-muted small fw-semibold">Temporal Peak Window</span>
+                                        <span class="badge bg-info-subtle text-info">Off-Hours</span>
+                                    </div>
+                                    <h3 class="fw-bold text-info mb-0">01:00 - 05:00</h3>
+                                    <small class="text-muted d-block mt-1">peak fraudulent surge window (sleeping cardholders)</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Macro Trends & Governance Gaps -->
+                        <div class="row g-4 mb-4">
+                            <div class="col-lg-6">
+                                <div class="card bg-dark-card border-dark-subtle h-100 shadow-sm">
+                                    <div class="card-header bg-dark-panel border-bottom border-dark-subtle p-3">
+                                        <div class="d-flex align-items-center gap-2">
+                                            <i class="bi bi-graph-up text-primary fs-5"></i>
+                                            <h6 class="fw-bold mb-0 text-light">Macro Trends & Exposure Trajectory</h6>
+                                        </div>
+                                    </div>
+                                    <div class="card-body p-3">
+                                        <ul class="list-group list-group-flush bg-transparent">
+                                            <li class="list-group-item bg-transparent text-light border-dark-subtle px-0 py-2">
+                                                <i class="bi bi-arrow-right-circle text-primary me-2"></i>Year-over-year fraud incidence exhibits continuous upward momentum driven by accelerated digital e-commerce adoption.
+                                            </li>
+                                            <li class="list-group-item bg-transparent text-light border-dark-subtle px-0 py-2">
+                                                <i class="bi bi-arrow-right-circle text-primary me-2"></i>Average fraudulent ticket size ($108.59) significantly outpaces micro-testing transactions, showing organized balance draining.
+                                            </li>
+                                            <li class="list-group-item bg-transparent text-light border-dark-subtle px-0 py-2">
+                                                <i class="bi bi-arrow-right-circle text-primary me-2"></i>Merchant categories MCC 5812, 5411, and 5814 (dining & grocery) suffer high automated bot testing attacks.
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6">
+                                <div class="card bg-dark-card border-dark-subtle h-100 shadow-sm">
+                                    <div class="card-header bg-dark-panel border-bottom border-dark-subtle p-3">
+                                        <div class="d-flex align-items-center gap-2">
+                                            <i class="bi bi-shield-exclamation text-warning fs-5"></i>
+                                            <h6 class="fw-bold mb-0 text-light">Identified Governance Gaps & Vulnerabilities</h6>
+                                        </div>
+                                    </div>
+                                    <div class="card-body p-3">
+                                        <div class="gap-item mb-3 pb-2 border-bottom border-dark-subtle">
+                                            <div class="d-flex justify-content-between">
+                                                <strong class="text-warning small">Delayed Velocity Throttling</strong>
+                                                <span class="badge bg-danger-subtle text-danger">Severe</span>
+                                            </div>
+                                            <p class="text-muted small mb-1">Attackers execute 5+ rapid transactions in minutes before daily batch reconciliation detects the breach.</p>
+                                            <small class="text-success fw-semibold"><i class="bi bi-check-circle me-1"></i>Fix: Deploy sub-second inline transaction velocity filters.</small>
+                                        </div>
+                                        <div class="gap-item">
+                                            <div class="d-flex justify-content-between">
+                                                <strong class="text-warning small">Unconditional Online Checkout</strong>
+                                                <span class="badge bg-danger-subtle text-danger">High</span>
+                                            </div>
+                                            <p class="text-muted small mb-1">High-ticket CNP checkouts without 3DS verification generate 70% of total chargeback losses.</p>
+                                            <small class="text-success fw-semibold"><i class="bi bi-check-circle me-1"></i>Fix: Mandate dynamic 3DS 2.0 biometric OTP on online transactions >= $200.</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12">
+                                <div class="card bg-dark-card border-primary-subtle shadow-sm">
+                                    <div class="card-header bg-dark-panel border-bottom border-dark-subtle p-3">
+                                        <div class="d-flex align-items-center gap-2">
+                                            <i class="bi bi-crosshair text-primary-accent fs-5"></i>
+                                            <h6 class="fw-bold mb-0 text-light">Strategic Priorities & Immediate Policy Recommendations</h6>
+                                        </div>
+                                    </div>
+                                    <div class="card-body p-3">
+                                        <div class="row g-3">
+                                            <div class="col-md-6 col-xl-3">
+                                                <div class="p-3 rounded-3 bg-dark-panel border border-dark-subtle h-100">
+                                                    <div class="fw-bold text-primary-accent mb-1">1. Dynamic 3D Secure</div>
+                                                    <p class="text-muted small mb-0">Enforce step-up challenges on all online checkouts matching High-Risk composite score criteria.</p>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 col-xl-3">
+                                                <div class="p-3 rounded-3 bg-dark-panel border border-dark-subtle h-100">
+                                                    <div class="fw-bold text-primary-accent mb-1">2. Merchant MCC Caps</div>
+                                                    <p class="text-muted small mb-0">Place automated 48h settlement holds on merchants whose 7-day fraud-to-sales ratio exceeds 3.0%.</p>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 col-xl-3">
+                                                <div class="p-3 rounded-3 bg-dark-panel border border-dark-subtle h-100">
+                                                    <div class="fw-bold text-primary-accent mb-1">3. Dark Web Ingestion</div>
+                                                    <p class="text-muted small mb-0">Auto-freeze and re-issue cards within 60 minutes of appearing on dark web compromised dumps.</p>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 col-xl-3">
+                                                <div class="p-3 rounded-3 bg-dark-panel border border-dark-subtle h-100">
+                                                    <div class="fw-bold text-primary-accent mb-1">4. Off-Hours Thresholds</div>
+                                                    <p class="text-muted small mb-0">Lower anomaly alert trigger amounts by 40% between 01:00 AM and 05:00 AM.</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- ======================================================= -->
+                    <!-- TAB 3: GRAPH INSIGHTS -->
+                    <!-- ======================================================= -->
+                    <div class="tab-pane fade" id="tab-graphs" role="tabpanel">
+
+                        <!-- Division Selector Sub-Navigation (6 Charts Per View) -->
+                        <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4 p-3 bg-dark-card rounded-3 border border-dark-subtle">
+                            <div>
+                                <h5 class="fw-bold text-light mb-1" id="divisionHeaderTitle">Macro Trends & Channel Risk</h5>
+                                <small class="text-muted" id="divisionHeaderDesc">Annual fraud trajectory, channel distribution, error correlations, and ticket size bands.</small>
+                            </div>
+
+                            <div class="btn-group" role="group" id="divisionButtonGroup">
+                                <button type="button" class="btn btn-sm btn-outline-primary active" data-division="division_1">
+                                    <i class="bi bi-1-circle me-1"></i> Macro & Channels (5)
+                                </button>
+                                <button type="button" class="btn btn-sm btn-outline-primary" data-division="division_2">
+                                    <i class="bi bi-2-circle me-1"></i> Entity Risk & Heatmaps (4)
+                                </button>
+                                <button type="button" class="btn btn-sm btn-outline-primary" data-division="division_3">
+                                    <i class="bi bi-3-circle me-1"></i> Risk Engine & Geospatial (4)
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- 6 Charts Grid Container -->
+                        <div class="row g-3 g-xl-4" id="chartsGridContainer">
+                            <div class="col-12 text-center py-5">
+                                <div class="spinner-border text-primary" role="status"></div>
+                                <div class="text-muted mt-2">Loading interactive Plotly visualizations...</div>
+                            </div>
+                        </div>
+
+                    </div>
+
+
+                    <!-- ======================================================= -->
+                    <!-- TAB 4: SQL QUERY EXPLORER ("THE BIG SHOT") -->
+                    <!-- ======================================================= -->
+                    <div class="tab-pane fade" id="tab-sql" role="tabpanel">
+
+                        <div class="card bg-dark-card border-dark-subtle shadow-sm mb-4">
+                            <div class="card-header bg-dark-panel border-bottom border-dark-subtle p-3">
+                                <div class="d-flex flex-wrap align-items-center justify-content-between gap-2">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="badge-icon fs-5 text-purple">
+                                            <i class="bi bi-terminal-fill"></i>
+                                        </div>
+                                        <div>
+                                            <h5 class="fw-bold mb-0 text-light">Enterprise SQL Query Explorer</h5>
+                                            <small class="text-muted">Live MySQL Query Execution, Analytical Modules & Benchmarks</small>
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex align-items-center gap-2">
+                                        <button class="btn btn-sm btn-outline-secondary" id="copySqlBtn">
+                                            <i class="bi bi-clipboard me-1"></i> Copy SQL
+                                        </button>
+                                        <button class="btn btn-sm btn-primary-accent d-flex align-items-center gap-1" id="executeSqlBtn">
+                                            <i class="bi bi-play-fill fs-5"></i>
+                                            <span>Execute Query</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card-body p-3 p-xl-4">
+
+                                <!-- Module & Query Dropdowns -->
+                                <div class="row g-3 mb-3">
+                                    <div class="col-md-5">
+                                        <label class="form-label text-muted small fw-semibold">Business Intelligence Module</label>
+                                        <select class="form-select bg-dark-panel border-dark-subtle text-light" id="sqlModuleSelect">
+                                            <!-- Dynamically Populated -->
+                                        </select>
+                                    </div>
+                                    <div class="col-md-7">
+                                        <label class="form-label text-muted small fw-semibold">Analytical Query Target</label>
+                                        <select class="form-select bg-dark-panel border-dark-subtle text-light" id="sqlQuerySelect">
+                                            <!-- Dynamically Populated -->
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <!-- Query Description Callout -->
+                                <div class="alert alert-dark bg-dark-panel border-dark-subtle py-2 px-3 mb-3 d-flex align-items-center gap-2" id="queryDescBox">
+                                    <i class="bi bi-info-circle text-primary-accent"></i>
+                                    <span class="small text-muted" id="queryDescText">Select a business query to inspect the SQL code and execute live against MySQL.</span>
+                                </div>
+
+                                <!-- SQL Code Editor View -->
+                                <div class="position-relative mb-3">
+                                    <textarea class="form-control font-monospace bg-dark-editor text-light border-dark-subtle p-3" id="sqlCodeEditor" rows="9" spellcheck="false"></textarea>
+                                </div>
+
+                                <!-- Execution Status & Metrics Bar -->
+                                <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 p-2 bg-dark-panel rounded-3 border border-dark-subtle mb-3" id="executionMetaBar">
+                                    <div class="d-flex align-items-center gap-3">
+                                        <span class="small text-muted">Status: <strong class="text-success" id="execStatus">Ready</strong></span>
+                                        <span class="small text-muted">Runtime: <strong class="text-light font-monospace" id="execRuntime">0.00 ms</strong></span>
+                                        <span class="small text-muted">Rows Returned: <strong class="text-light font-monospace" id="execRowCount">0</strong></span>
+                                    </div>
+                                    <button class="btn btn-sm btn-outline-success" id="exportCsvBtn" disabled>
+                                        <i class="bi bi-download me-1"></i> Export CSV
+                                    </button>
+                                </div>
+
+                                <!-- Results Data Grid -->
+                                <div class="table-responsive rounded-3 border border-dark-subtle" style="max-height: 420px; overflow-y: auto;" id="tableContainer">
+                                    <table class="table table-dark table-hover table-striped mb-0 text-sm align-middle" id="sqlResultsTable">
+                                        <thead class="sticky-top bg-dark-panel" id="sqlTableHead">
+                                            <tr><th class="text-muted">Click "Execute Query" to run against MySQL</th></tr>
+                                        </thead>
+                                        <tbody id="sqlTableBody">
+                                            <tr><td class="text-muted text-center py-4">No query execution data available yet.</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </main>
+        </div>
+    </div>
+
+
+    <!-- ======================================================= -->
+    <!-- VIRTUAL AVATAR CHATBOT (FLOATING BOTTOM-RIGHT WIDGET) -->
+    <!-- ======================================================= -->
+
+    <!-- Floating Avatar Action Button -->
+    <div class="floating-avatar-toggle" id="avatarChatToggle" title="Open Virtual Avatar AI Assistant">
+        <div class="avatar-ring"></div>
+        <div class="avatar-icon">
+            <i class="bi bi-robot"></i>
+        </div>
+        <span class="avatar-pulse-badge"></span>
+    </div>
+
+    <!-- Phone-Ratio Chatbot Drawer Window (380px x 580px) -->
+    <div class="avatar-chat-window bg-dark-card border border-dark-subtle shadow-lg" id="avatarChatWindow">
+
+        <!-- Chat Header -->
+        <div class="chat-header p-3 bg-dark-panel border-bottom border-dark-subtle d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center gap-2">
+                <div class="avatar-header-icon text-primary-accent fs-5">
+                    <i class="bi bi-robot"></i>
+                </div>
+                <div>
+                    <h6 class="mb-0 fw-bold text-light">Aegis AI Avatar</h6>
+                    <small class="text-success d-flex align-items-center gap-1" style="font-size: 0.68rem;">
+                        <span class="status-dot status-dot-live"></span> Connected to MySQL Data
+                    </small>
+                </div>
+            </div>
+            <button class="btn btn-sm btn-link text-muted p-0" id="closeChatBtn">
+                <i class="bi bi-x-lg fs-5"></i>
+            </button>
+        </div>
+
+        <!-- Chat Quick Suggestions Chips -->
+        <div class="chat-suggestions px-3 py-2 border-bottom border-dark-subtle bg-dark-panel d-flex gap-1 overflow-x-auto">
+            <button class="btn btn-xs btn-outline-secondary text-nowrap prompt-chip" data-prompt="What is our overall fraud rate and loss?">?? Overall KPIs</button>
+            <button class="btn btn-xs btn-outline-secondary text-nowrap prompt-chip" data-prompt="Which payment channel is the most risky?">?? Channel Risk</button>
+            <button class="btn btn-xs btn-outline-secondary text-nowrap prompt-chip" data-prompt="How does the multi-factor risk score work?">? Risk Engine</button>
+            <button class="btn btn-xs btn-outline-secondary text-nowrap prompt-chip" data-prompt="Top fraudulent merchants and categories?">?? High-Risk Merchants</button>
+        </div>
+
+        <!-- Chat Message Stream -->
+        <div class="chat-messages p-3" id="chatMessages">
+            <div class="message-bubble bot-bubble">
+                <div class="message-content">
+                    <p class="mb-1">?? Hello! I am <strong>Aegis AI</strong>, your Virtual Fraud Analytics Avatar.</p>
+                    <p class="mb-0 small text-muted">Ask me anything about portfolio metrics, risk scoring, high-risk merchants, or remediation strategies!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chat Input Form -->
+        <div class="chat-footer p-2 bg-dark-panel border-top border-dark-subtle">
+            <form id="chatForm" class="d-flex gap-2">
+                <input type="text" class="form-control form-control-sm bg-dark-editor text-light border-dark-subtle" id="chatInput" placeholder="Ask Aegis AI about fraud patterns..." autocomplete="off">
+                <button type="submit" class="btn btn-sm btn-primary-accent px-3">
+                    <i class="bi bi-send-fill"></i>
+                </button>
+            </form>
+        </div>
+
+    </div>
+
+
+    <!-- ======================================================= -->
+    <!-- DATABASE CONFIGURATION MODAL -->
+    <!-- ======================================================= -->
+    <div class="modal fade" id="dbConfigModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-dark-card border border-dark-subtle">
+                <div class="modal-header border-bottom border-dark-subtle">
+                    <h5 class="modal-title fw-bold text-light d-flex align-items-center gap-2">
+                        <i class="bi bi-database-gear text-primary-accent"></i> MySQL Connection Settings
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="dbConfigForm">
+                        <div class="mb-3">
+                            <label class="form-label text-muted small">Host</label>
+                            <input type="text" class="form-control bg-dark-panel border-dark-subtle text-light" id="dbHost" value="localhost">
+                        </div>
+                        <div class="row g-2 mb-3">
+                            <div class="col-6">
+                                <label class="form-label text-muted small">Port</label>
+                                <input type="number" class="form-control bg-dark-panel border-dark-subtle text-light" id="dbPort" value="3306">
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label text-muted small">Database</label>
+                                <input type="text" class="form-control bg-dark-panel border-dark-subtle text-light" id="dbDatabase" value="fraud_detection">
+                            </div>
+                        </div>
+                        <div class="row g-2 mb-3">
+                            <div class="col-6">
+                                <label class="form-label text-muted small">Username</label>
+                                <input type="text" class="form-control bg-dark-panel border-dark-subtle text-light" id="dbUser" value="root">
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label text-muted small">Password</label>
+                                <input type="password" class="form-control bg-dark-panel border-dark-subtle text-light" id="dbPassword" value="Cos^2@+Sin^2@=1">
+                            </div>
+                        </div>
+                        <div class="alert alert-dark bg-dark-panel border-dark-subtle py-2 px-3 mb-0" id="dbTestStatus">
+                            <small class="text-muted">MySQL connection is currently active and query-ready.</small>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer border-top border-dark-subtle">
+                    <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary-accent btn-sm" id="saveDbConfigBtn">Test & Reconnect</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Application Scripts -->
+    <script src="/static/js/dashboard.js"></script>
+    <script src="/static/js/sql_explorer.js"></script>
+    <script src="/static/js/chatbot.js"></script>
+</body>
+</html>
