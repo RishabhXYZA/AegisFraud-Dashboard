@@ -1,5 +1,3 @@
-USE fraud_detection;
-
 -- 1. Total records
 SELECT COUNT(*) AS total_users
 FROM users
