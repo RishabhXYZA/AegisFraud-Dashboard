@@ -1,5 +1,3 @@
-USE fraud_detection;
-
 -- 1. Fraud rate by card
 -- This identifies cards with unusually high fraud activity.
 SELECT
