@@ -294,8 +294,7 @@ Contributions that improve features, performance, or documentation are welcome. 
 ![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github)
 
 ## 🚀 Try it Live
-
-[Add your live deployment link here]
+[![Live Link](https://img.shields.io/badge/LiveLink-181717?style=for-the-badge&logo=link&logoColor=white)](https://aegisfraud-dashboard.onrender.com)
 
 ## 👨‍💻 Author
 
